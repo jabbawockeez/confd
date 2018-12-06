@@ -20,7 +20,7 @@ Optional:
 * `scheme` (string) - The backend URI scheme. ("http" or "https")
 * `srv_domain` (string) - The name of the resource record.
 * `srv_record` (string) - The SRV record to search for backends nodes.
-* `sync-only` (bool) - sync without check_cmd and reload_cmd.
+* `sync-only` (bool) - sync without check_cmd(reload_cmd will still be executed if set).
 * `watch` (bool) - Enable watch support.
 * `auth_token` (string) - Auth bearer token to use.
 * `auth_type` (string) - Vault auth backend type to use.

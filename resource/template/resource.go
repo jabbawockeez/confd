@@ -244,10 +244,12 @@ func (t *TemplateResource) sync() error {
 	}
 
 	log.Debug("Comparing candidate config to " + t.Dest)
-	ok, err := util.IsConfigChanged(staged, t.Dest)
-	if err != nil {
-		log.Error(err.Error())
-	}
+
+	var ok bool = true
+	// ok, err := util.IsConfigChanged(staged, t.Dest)
+	// if err != nil {
+	// 	log.Error(err.Error())
+	// }
 	if t.noop {
 		log.Warning("Noop mode enabled. " + t.Dest + " will not be modified")
 		return nil
@@ -281,7 +283,12 @@ func (t *TemplateResource) sync() error {
 				return err
 			}
 		}
-		if !t.syncOnly && t.ReloadCmd != "" {
+		// if !t.syncOnly && t.ReloadCmd != "" {
+		// 	if err := t.reload(); err != nil {
+		// 		return err
+		// 	}
+		// }
+		if t.ReloadCmd != "" {
 			if err := t.reload(); err != nil {
 				return err
 			}
@@ -310,6 +317,7 @@ func (t *TemplateResource) check() error {
 	if err := tmpl.Execute(&cmdBuffer, data); err != nil {
 		return err
 	}
+
 	return runCommand(cmdBuffer.String())
 }
 
@@ -334,7 +342,8 @@ func runCommand(cmd string) error {
 
 	output, err := c.CombinedOutput()
 	if err != nil {
-		log.Error(fmt.Sprintf("%q", string(output)))
+		// log.Error(fmt.Sprintf("%q", string(output)))
+		err = errors.New(string(output) + err.Error())
 		return err
 	}
 	log.Debug(fmt.Sprintf("%q", string(output)))

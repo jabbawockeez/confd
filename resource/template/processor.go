@@ -67,12 +67,13 @@ type watchProcessor struct {
 	stopChan chan bool
 	doneChan chan bool
 	errChan  chan error
+	succChan chan bool
 	wg       sync.WaitGroup
 }
 
-func WatchProcessor(config Config, stopChan, doneChan chan bool, errChan chan error) Processor {
+func WatchProcessor(config Config, stopChan, doneChan chan bool, errChan chan error, succChan chan bool) Processor {
 	var wg sync.WaitGroup
-	return &watchProcessor{config, stopChan, doneChan, errChan, wg}
+	return &watchProcessor{config, stopChan, doneChan, errChan, succChan, wg}
 }
 
 func (p *watchProcessor) Process() {
@@ -104,6 +105,8 @@ func (p *watchProcessor) monitorPrefix(t *TemplateResource) {
 		t.lastIndex = index
 		if err := t.process(); err != nil {
 			p.errChan <- err
+		} else {
+			p.succChan <- true
 		}
 	}
 }
